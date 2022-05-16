@@ -1,0 +1,114 @@
+{% extends 'core/base.html' %}
+{% load martortags %}
+
+{% block content %}
+
+    <h3>{{ project.name }}</h3>
+
+                    {{ project.project_information|safe_markdown }} <p>In this page is possible to download reports or shows them online</p>
+
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Downloads</h6>
+                            </div>
+                            <div class="card-body">
+                                <p> If you prefer you can download all the files (PDF, html table, csv of credentials) as a zip
+                                    </p>
+                                 <a target="_blank" href="{% url 'export_all_from_project' project.pk %}" class="btn btn-warning  btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Download all project reports!</span>
+            </a>
+
+                            </div>
+                        </div>
+    {% if generate_table_report %}
+         <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">General Report</h6>
+        </div>
+        <div class="card-body">
+
+        <p>This report act as an entry point for the others. It contains an HTML table where you can filter and search all the found vulnerabilities during the assasment. </p>
+
+            <a target="_blank" href="{% url 'project_general_report' project.pk %}" class="btn btn-primary  btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Read the report now!</span>
+            </a>
+
+             <a target="_blank" href="{% url 'export_general_report' project.pk %}" class="btn btn-warning  mr-lg-3 btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Download the general Report as HTML</span>
+            </a>
+
+
+        </div>
+    </div>
+    {% endif %}
+
+    {%  if generate_domain_cred_report %}
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Deep Web Credentials</h6>
+        </div>
+        <div class="card-body">
+
+        <p>In this report you will be able to check if the domains you own have ended up in some data leak. If you discover any credentials you use on a daily basis in this report, please change them and enable multi-factor authentication.
+                    <i> Warning, some data may be false positives
+
+        </p>
+            <a target="_blank" href="{% url 'credentials_table' project.pk %}" class="btn btn-primary  btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Analizza le credenziali!</span>
+                <a target="_blank" href="{% url 'export_credentials_csv' project.pk %}" class="btn btn-warning  mr-lg-3 btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Download CSV with credentials!</span>
+            </a>
+
+            </a>
+
+        </div>
+    </div>
+    {% endif %}
+
+
+
+{% for report in reports %}
+     <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">REPORT: {{ report.name }}</h6>
+        </div>
+        <div class="card-body">
+
+            <div class="martor-preview">
+                {{ report.short_description|safe_markdown }}
+            </div>
+
+            <a target="_blank" href="{% url 'report_detail' report.pk %}" class="btn btn-primary  btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Read the report online!</span>
+            </a>
+             <a target="_blank" href="{% url 'export_pdf' report.pk %}" class="btn btn-warning  mr-lg-3 btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Download Report PDF!</span>
+            </a>
+
+        </div>
+    </div>
+
+        {% endfor %}
+{% endblock %}

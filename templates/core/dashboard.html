@@ -1,0 +1,180 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+
+
+    <div class="row">
+        <div class="col-lg-3 mb-3">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body text-white-50">
+                    Critical Vulnerabilities
+                    <div class="text-white big">{{ high_entries|length }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 mb-3">
+
+            <div class="card bg-warning text-white shadow">
+                <div class="card-body text-white-50">
+                    Medium Risk Vulnerabilities
+                    <div class="text-white big">{{ medium_entries|length }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 mb-3">
+
+            <div class="card bg-info text-white shadow">
+                <div class="card-body text-white-50">
+                    Low risk vulnerabilities
+                    <div class="text-white big">{{ low_entries|length }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 mb-3">
+
+            <div class="card bg-gradient-dark text-white shadow">
+                <div class="card-body text-white-50">
+                    Credentials in Dark Web
+                    <div class="text-white big">{{ found_credentials }}</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-8">
+            <!-- Basic Card Example -->
+            <div class="card shadow  lg-4 mb-4 ">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Welcome!</h6>
+                </div>
+                <div class="card-body">
+                    <p> Welcome {{ request.user.name }}, the team it's happy to see you there. Thanks for being a loyal customer!
+                        In this website you will find the results of your pentest </p>
+                    <p> Before we begin, here some stats about your pentest</p>
+                    <ul>
+                        <li>Your user has  <b>{{ project_list|length }}</b> assigned projects</li>
+                        <li>We have found <b>{{ found_credentials }}</b> credentials in dataleaks</li>
+                        <li>We found  <b>{{ entries|length }}</b> vulnerabilities <sup>(1)</sup>
+                        </li>
+                        <li><b class="text-danger">{{ high_entries|length }}</b>: critical vulnerabilities. With
+                            critical vulnerability means a
+                            vulnerability capable of compromising the entire system. They have an assigned score
+                            greater than or equal to 7. <sup>(2)</sup>
+                        </li>
+                        <li><b class="text-warning">{{ medium_entries|length }}</b>:vulnerability of medium severity
+                            found. They are vulnerabilities that cannot directly compromise the system, but
+                            they can equally cause system damage or be combined with other vulnerabilities to cause critical effects. They have a score between 4 and 6.
+                        </li>
+                        <li><b class="text-info">{{ low_entries|length }}</b>: low severity vulnerability o
+                            information found. They have a score from 1 to 3. However, they should not be neglected.
+                        </li>
+
+                    </ul>
+                    <i><sup>(1)</sup>: The vulnerabilities have been grouped for convenience. The actual number of
+                        vulnerability can be greater.
+                    </i><br>
+                    <i><sup>(2)</sup>: Scores are calculated based on the international OWASP risk standard
+                        rating when not specifed.</i>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-xl-4 col-lg-4">
+            <div class="card shadow lg-4 mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Stats</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie pt-4">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <canvas id="myPieChart" style="display: block; width: 325px; height: 253px;"
+                                class="chartjs-render-monitor" width="325" height="253"></canvas>
+                    </div>
+                    <hr>
+                    high risk: {{  high_entries|length }}<br>
+                    medium risk: {{ medium_entries| length }}<br>
+                    low risk: {{  low_entries| length }}<br>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+
+            <h3>Projects: </h3>
+            {% include 'core/projects.html' %}
+
+            {#            <div class="card shadow mb-4">#}
+            {#                <div class="card-header py-3">#}
+            {#                    <h6 class="m-0 font-weight-bold text-primary">Downloads</h6>#}
+            {#                </div>#}
+            {#                <div class="card-body">#}
+            {#                    <p> Se preferisci, puoi scaricare un file zip contenente tutti i report in formato PDF, la tabella#}
+            {#                        di resoconto in formato HTML e le credenziali in formato CSV.</p>#}
+            {#                </div>#}
+            {#            </div>#}
+
+        </div>
+
+    </div>
+
+
+
+
+
+{% endblock %}
+
+{% block after_body_scripts %}
+    <script>
+
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
+
+        // Pie Chart Example
+        var ctx = document.getElementById("myPieChart");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["High/Critical", "Medium", "Low"],
+                datasets: [{
+                    data: [{{ high_entries|length }}, {{ medium_entries|length }}, {{ low_entries|length }}],
+                    backgroundColor: ['#E74A3B', '#F6C23E', '#36B9CC'],
+                    hoverBackgroundColor: ['#E74A3B', '#F6C23E', '#36B9CC'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 80,
+            },
+        });
+    </script>
+{% endblock %}

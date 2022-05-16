@@ -1,0 +1,15 @@
+asgiref==3.5.1
+backports.zoneinfo==0.2.1
+Django==3.2.12
+pip==21.1.2
+setuptools==57.0.0
+sqlparse==0.4.2
+wheel==0.36.2
+django-smart-selects
+Markdown>=3.0
+requests>=2.12.4
+martor
+django-weasyprint
+# sudo apt-get install wkhtmltopdf
+pdfkit
+django-markdown-editor

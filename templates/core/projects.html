@@ -1,0 +1,24 @@
+{% load martortags %}
+
+{% for project in project_list %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">{{ project.name }}</h6>
+        </div>
+        <div class="card-body">
+
+            <div class="martor-preview">
+                {{ project.objective|safe_markdown }}
+                {{ project.project_information|safe_markdown }}
+            </div>
+
+            <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary  btn-icon-split float-right">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+                <span class="text">Go to the report!</span>
+            </a>
+
+        </div>
+    </div>
+{% endfor %}
